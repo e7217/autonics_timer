@@ -8,7 +8,7 @@ from pymodbus.client.sync import ModbusSerialClient as modclient
 from pymodbus.register_read_message import ReadInputRegistersRequest
 from pymodbus.register_read_message import ReadHoldingRegistersRequest
 
-# modbus : ('coil' or 'holding')
+# modbus : ('coil' / 'holding' / 'analog')
 def writeToCounter(modbus, address, value):
 
     # client1 = modclient(method='rtu', port='/dev/ttyUSB0', stopbits=1, bytesize=8, baudrate=19200)
@@ -26,8 +26,7 @@ def writeToCounter(modbus, address, value):
         valuecheck = client1.read_holding_registers(address, 1, unit=0x01)
         print valuecheck.registers
 
-    print type(valuecheck)
-
+    # print type(valuecheck)
     client1.close()
 
 def readFromCounter(modbus, address):
@@ -41,7 +40,10 @@ def readFromCounter(modbus, address):
         print valuecheck.bits[0]
     elif modbus == 'holding' :
         valuecheck = client1.read_holding_registers(address, 1, unit=0x01)
-        # print valuecheck.registers
+        print valuecheck.registers
+    elif modbus == 'analog':
+        valuecheck = client1.read_input_registers(address, 1, unit=0x01)
+        print valuecheck.registers
 
     # print type(valuecheck)
 
@@ -49,13 +51,17 @@ def readFromCounter(modbus, address):
 
     return valuecheck
 
+# ------------------------ setting environments -------------------------------------
+
 client1 = modclient(method='rtu', port='com9', stopbits=2, bytesize=8, baudrate=9600)
 
+countValueAddress = 1003 # modbus : 'analog'
+resetAddress = 0 # modbus : 'coil'
+forResetValue = 1
+
+# -----------------------------------------------------------------------------------
+
 # protocol for reset
-# writeToCounter('coil', 0, 1)
-
-list = [0, 2, 4, 50, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 64, 65, 100, 102, 103, 104, 105, 106, 107, 108, 109, 150, 151, 152, 153, 154, 155]
-
-for i in list:
-    print i, ':', readFromCounter('holding', i).registers
+# writeToCounter('coil', resetAddress, forResetValue)
+readFromCounter('analog', countValueAddress)
 
