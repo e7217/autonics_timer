@@ -1,12 +1,12 @@
-# import logging
-# logging.basicConfig()
-# log = logging.getLogger()
-# log.setLevel(logging.DEBUG)
-
 import pymodbus
 from pymodbus.client.sync import ModbusSerialClient as modclient
 from pymodbus.register_read_message import ReadInputRegistersRequest
 from pymodbus.register_read_message import ReadHoldingRegistersRequest
+
+# import logging
+# logging.basicConfig()
+# log = logging.getLogger()
+# log.setLevel(logging.DEBUG)
 
 # modbus : ('coil' / 'holding' / 'analog')
 def writeToCounter(modbus, address, value):
@@ -62,6 +62,6 @@ forResetValue = 1
 # -----------------------------------------------------------------------------------
 
 # protocol for reset
-# writeToCounter('coil', resetAddress, forResetValue)
-readFromCounter('analog', countValueAddress)
-
+writeToCounter('coil', resetAddress, forResetValue)
+# readFromCounter('analog', countValueAddress)
+# readFromCounter('analog', 1006)
