@@ -51,6 +51,7 @@ def readFromCounter(modbus, address):
 
 client1 = modclient(method='rtu', port='com9', stopbits=2, bytesize=8, baudrate=9600)
 
+# protocol for reset
 # writeToCounter('coil', 0, 1)
 
 list = [0, 2, 4, 50, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 64, 65, 100, 102, 103, 104, 105, 106, 107, 108, 109, 150, 151, 152, 153, 154, 155]
