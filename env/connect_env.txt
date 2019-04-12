@@ -1,0 +1,5 @@
+server = dev.cyberwin.co.kr:1566
+user = frienderp
+password = ctf$0501#
+database = Q3I_DEV
+machine = M001

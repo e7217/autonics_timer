@@ -1,0 +1,10 @@
+server = dev.cyberwin.co.kr:1566
+user = frienderp
+password = ctf$0501#
+database = Q3I_DEV
+machine = D99
+send_cycle = 0.05
+response_count = 10
+sequence_cycle = 1
+ver = 100
+zone_hopper_id = 1

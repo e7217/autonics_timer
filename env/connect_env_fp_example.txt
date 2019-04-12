@@ -1,0 +1,15 @@
+server = dev.cyberwin.co.kr:1566
+user = frienderp
+password = ctf$0501#
+database = Q3I_DEV
+machine = M-99
+send_cycle = 0.05
+response_count = 10
+sequence_cycle = 1
+tmp_id_num = 5
+zone_1_id = 1
+zone_2_id = 2
+zone_3_id = 3
+zone_4_id = 4
+zone_5_id = 5
+zone_cnt_id = 6
