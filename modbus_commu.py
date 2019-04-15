@@ -10,6 +10,7 @@ import pymssql
 import time
 import datetime
 
+# if active active this moudules, debug messages are printed.
 # import logging
 # logging.basicConfig()
 # log = logging.getLogger()
@@ -44,7 +45,7 @@ def writeToCounter(modbus, address, value):
 
     # client1 = modclient(method='rtu', port='/dev/ttyUSB0', stopbits=1, bytesize=8, baudrate=19200)
     # client1 = modclient(method='rtu', port='com9', stopbits=2, bytesize=8, baudrate=9600)
-
+    client1.close()
     conn = client1.connect()
     print('connection status : ', conn)
 
@@ -61,10 +62,10 @@ def writeToCounter(modbus, address, value):
     client1.close()
 
 def readFromCounter(modbus, address):
-
+    client1.close()
     # client1 = modclient(method='rtu', port='/dev/ttyUSB0', stopbits=1, bytesize=8, baudrate=19200)
     conn = client1.connect()
-    # print('connection status : ', conn)
+    print 'connection status : ', conn
 
     if modbus == 'coil' :
         valuecheck = client1.read_coils(address, 1, unit=0x01)
@@ -72,10 +73,10 @@ def readFromCounter(modbus, address):
     elif modbus == 'holding' :
         valuecheck = client1.read_holding_registers(address, 1, unit=0x01)
         print 'value : ', valuecheck.registers
-    elif modbus == 'analog':
+    elif modbus == 'analog' :
         valuecheck = client1.read_input_registers(address, 1, unit=0x01)
         print 'value : ', valuecheck.registers
-
+    print 'rawFrame : ', client1.framer.getRawFrame()
     # print type(valuecheck)
 
     client1.close()
@@ -110,7 +111,7 @@ def do(value):
 
     except:
         print 'retry'
-        do(value)
+        pass
 
 def input(value):
     try:
@@ -133,14 +134,20 @@ def input(value):
 
     except :
         print 'retry'
-        input()
+        input(value)
 # ------------------------ setting environments ----------------------------------------
 
 # Configure Count and Reset Protocol
-client1 = modclient(method='rtu', port='com9', stopbits=2, bytesize=8, baudrate=9600)
+# set client
+# In Windows Environments,
+# client1 = modclient(method='rtu', port='com5', stopbits=2, bytesize=8, baudrate=9600)
+
+# In Debian Environments,
+client1 = modclient(method='rtu', port='/dev/ttyUSB0', stopbits=2, bytesize=8, baudrate=9600)
 countValueAddress = 1003 # modbus : 'analog'
 resetAddress = 0 # modbus : 'coil'
 forResetValue = 1
+preCountValue = 0
 
 # Configuration from an environments file.
 fc_path= './env/connect_env.txt'
@@ -162,16 +169,21 @@ mchcd = envList['machine']
 #todo: inputdata
 
 while (True) :
-    countValue = readFromCounter('analog', countValueAddress).registers
-    time.sleep(10)
-
-    # todo: reset countValue at 8 a.m
-    resettime = datetime.datetime.now().time()
-    if resettime > datetime.time(07,54) and resettime < datetime.time(07,55):
-        do(countValue)
-    else:
-        input(countValue)
-
-
+    try :
+        countValue = (readFromCounter('analog', countValueAddress).registers)[0]
+        time.sleep(10)
+        print 'countValue :', countValue
+        # todo: reset countValue at 8 a.m
+        resettime = datetime.datetime.now().time()
+        if resettime > datetime.time(7,54) and resettime < datetime.time(7,55):
+            do(countValue)
+        elif preCountValue == countValue: # if
+            pass
+        else :
+            input(countValue)
+        preCountValue = countValue
+    except :
+        print '*' * 20 + ' error ' + '*' * 20
+        pass
 
 #todo: check response.
