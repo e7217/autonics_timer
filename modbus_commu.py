@@ -47,14 +47,20 @@ def writeToCounter(modbus, address, value):
     # client1 = modclient(method='rtu', port='com9', stopbits=2, bytesize=8, baudrate=9600)
     client1.close()
     conn = client1.connect()
-    print('connection status : ', conn)
-
+    print 'connection status : ', conn
+    check = None
     if modbus == 'coil' :
-        client1.write_coil(address, value, unit=0x01)
+        rq = client1.write_coil(address, value, unit=0x01)
+        check = client1.transaction.execute(rq)
+        print 'check : ', check
+        print 'assert : '
+        assert (rq.function_code < 0x08)
         valuecheck = client1.read_coils(address, 1, unit=0x01)
         print valuecheck.bits[0]
     elif modbus == 'holding' :
-        client1.write_register(address, value, unit=0x01)
+        rq = client1.write_register(address, value, unit=0x01)
+        print 'assert'
+        assert (rq.function_code < 0x08)
         valuecheck = client1.read_holding_registers(address, 1, unit=0x01)
         print valuecheck.registers
 
@@ -76,7 +82,6 @@ def readFromCounter(modbus, address):
     elif modbus == 'analog' :
         valuecheck = client1.read_input_registers(address, 1, unit=0x01)
         print 'value : ', valuecheck.registers
-    print 'rawFrame : ', client1.framer.getRawFrame()
     # print type(valuecheck)
 
     client1.close()
@@ -140,10 +145,10 @@ def input(value):
 # Configure Count and Reset Protocol
 # set client
 # In Windows Environments,
-# client1 = modclient(method='rtu', port='com5', stopbits=2, bytesize=8, baudrate=9600)
+client1 = modclient(method='rtu', port='com6', stopbits=2, bytesize=8, baudrate=9600)
 
 # In Debian Environments,
-client1 = modclient(method='rtu', port='/dev/ttyUSB0', stopbits=2, bytesize=8, baudrate=9600)
+# client1 = modclient(method='rtu', port='/dev/ttyUSB0', stopbits=2, bytesize=8, baudrate=9600)
 countValueAddress = 1003 # modbus : 'analog'
 resetAddress = 0 # modbus : 'coil'
 forResetValue = 1
@@ -175,7 +180,7 @@ while (True) :
         print 'countValue :', countValue
         # todo: reset countValue at 8 a.m
         resettime = datetime.datetime.now().time()
-        if resettime > datetime.time(7,54) and resettime < datetime.time(7,55):
+        if resettime > datetime.time(9,45) and resettime < datetime.time(10,50):
             do(countValue)
         elif preCountValue == countValue: # if
             pass
