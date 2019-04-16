@@ -180,7 +180,7 @@ while (True) :
         print 'countValue :', countValue
         # todo: reset countValue at 8 a.m
         resettime = datetime.datetime.now().time()
-        if resettime > datetime.time(9,45) and resettime < datetime.time(10,50):
+        if resettime > datetime.time(7,54) and resettime < datetime.time(7,55):
             do(countValue)
         elif preCountValue == countValue: # if
             pass
